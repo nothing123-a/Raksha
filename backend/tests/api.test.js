@@ -1,4 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import dotenv from 'dotenv';
+dotenv.config();
+
 import request from 'supertest';
 import mongoose from 'mongoose';
 import app from '../app.js';
