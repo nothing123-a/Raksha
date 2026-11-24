@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Sidebar } from '../components/Sidebar';
 import { Header } from '../components/Header';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, DEMO_USERS } from '../context/AuthContext';
 
 export const AppLayout = ({ allowedRoles = [] }) => {
-  const { user, loading, isAuthenticated } = useAuth();
+  const { user, loading, setUser } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -19,16 +20,25 @@ export const AppLayout = ({ allowedRoles = [] }) => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  // If user is not authenticated, seamlessly auto-assign the demo role for this portal
+  let activeUser = user;
+  if (!activeUser) {
+    let fallbackRole = 'student';
+    if (location.pathname.startsWith('/faculty') || allowedRoles.includes('faculty')) {
+      fallbackRole = 'faculty';
+    } else if (location.pathname.startsWith('/hod') || allowedRoles.includes('hod')) {
+      fallbackRole = 'hod';
+    }
+    activeUser = DEMO_USERS[fallbackRole];
+    setUser(activeUser);
+    localStorage.setItem('mitaoe_user', JSON.stringify(activeUser));
   }
 
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
-    // Redirect to user's own home dashboard if trying to access wrong role page
+  if (allowedRoles.length > 0 && !allowedRoles.includes(activeUser?.role)) {
     const redirectPath =
-      user.role === 'student'
+      activeUser.role === 'student'
         ? '/student/dashboard'
-        : user.role === 'faculty'
+        : activeUser.role === 'faculty'
         ? '/faculty/dashboard'
         : '/hod/dashboard';
     return <Navigate to={redirectPath} replace />;
