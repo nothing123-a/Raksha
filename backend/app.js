@@ -48,16 +48,33 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Mount Routes
+// Mount Routes (with /api and root fallback to prevent 404s)
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/students', studentRoutes);
+app.use('/students', studentRoutes);
+
 app.use('/api/faculty', facultyRoutes);
+app.use('/faculty', facultyRoutes);
+
 app.use('/api/hod', hodRoutes);
+app.use('/hod', hodRoutes);
+
 app.use('/api/courses', courseRoutes);
+app.use('/courses', courseRoutes);
+
 app.use('/api/sessions', sessionRoutes);
+app.use('/sessions', sessionRoutes);
+
 app.use('/api/attendance', attendanceRoutes);
+app.use('/attendance', attendanceRoutes);
+
 app.use('/api/corrections', correctionRoutes);
+app.use('/corrections', correctionRoutes);
+
 app.use('/api/timetable', timetableRoutes);
+app.use('/timetable', timetableRoutes);
 
 // 404 handler
 app.use('/api/*', (req, res) => {

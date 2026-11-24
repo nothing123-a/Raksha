@@ -1,7 +1,17 @@
 import axios from 'axios';
 
+let rawBaseURL = import.meta.env.VITE_API_URL || 'https://raksha-mr6w.onrender.com/api';
+
+// Normalize: remove trailing slash
+rawBaseURL = rawBaseURL.trim().replace(/\/+$/, '');
+
+// Automatically ensure /api is included if omitted in environment variables
+if (!rawBaseURL.endsWith('/api')) {
+  rawBaseURL = `${rawBaseURL}/api`;
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://raksha-mr6w.onrender.com/api',
+  baseURL: rawBaseURL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
