@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm --prefix frontend install && npm run build --prefix frontend",
+  "outputDirectory": "frontend/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://raksha-mr6w.onrender.com/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
